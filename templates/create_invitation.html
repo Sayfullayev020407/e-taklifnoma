@@ -89,7 +89,7 @@ body {
         object-fit: contain;
         border-radius: 6px;
         cursor: pointer;
-        padding: px;
+        padding: 2px; /* Fixed typo from 'px' to '2px' */
     }
 
     .background-image.selected {
@@ -189,13 +189,16 @@ body {
             <input type="hidden" name="background" id="selected-background" required>
         </div>
         <button type="submit" class="btn btn-primary">Yaratish</button>
-        </form> 
+    </form> 
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const images = document.querySelectorAll('.background-image');
     const hiddenInput = document.getElementById('selected-background');
+    const form = document.getElementById('invitation-form');
+    const loaderOverlay = document.getElementById('loaderOverlay');
 
+    // Background image selection
     images.forEach(image => {
         image.addEventListener('click', function() {
             images.forEach(img => {
@@ -205,6 +208,19 @@ document.addEventListener('DOMContentLoaded', function() {
             this.classList.add('selected');
             this.nextElementSibling.style.display = 'block';
             hiddenInput.value = this.dataset.id;
+        });
+    });
+
+    // Show loader on form submission
+    form.addEventListener('submit', function() {
+        loaderOverlay.style.display = 'flex';
+    });
+
+    // Show loader for any links in the content area
+    const links = document.querySelectorAll('.container a');
+    links.forEach(link => {
+        link.addEventListener('click', function() {
+            loaderOverlay.style.display = 'flex';
         });
     });
 });
