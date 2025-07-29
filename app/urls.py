@@ -10,6 +10,6 @@ urlpatterns = [
     path('invitation/<int:invitation_id>/delete/', views.delete_invitation, name='delete_invitation'),
     path('invitation/<str:unique_url>/', views.invitation_page, name='invitation_page'),
     path('invitation/<int:invitation_id>/send/image/', views.send_image, name='send_image'),
-    path('invitation/<int:invitation_id>/send/video/', views.send_video, name='send_video'),
+    path('invitation/<int:invitation_id>/send/video/', views.send_image, name='send_video'),
     path('profile/', views.profile, name='profile'),
 ]
