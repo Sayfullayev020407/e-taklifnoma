@@ -64,7 +64,6 @@ body {
         text-align: left;
     }
 
-
     /* Amallar tugmalari */
     .table tbody td:last-child {
         display: flex;
@@ -181,24 +180,43 @@ body {
     {% endif %}
 </div>
 <script>
-document.querySelectorAll('.delete-btn').forEach(button => {
-    button.addEventListener('click', function() {
-        if (confirm('Haqiqatan ham o\'chirishni xohlaysizmi?')) {
-            fetch(`/invitation/${this.dataset.id}/delete/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    this.closest('tr').remove();
-                } else {
-                    alert('Xatolik yuz berdi');
-                }
-            });
-        }
+document.addEventListener('DOMContentLoaded', function() {
+    const loaderOverlay = document.getElementById('loaderOverlay');
+    const links = document.querySelectorAll('.container a');
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+
+    // Show loader for links in the content area
+    links.forEach(link => {
+        link.addEventListener('click', function() {
+            loaderOverlay.style.display = 'flex';
+        });
+    });
+
+    // Show loader for delete buttons
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            if (confirm('Haqiqatan ham o\'chirishni xohlaysizmi?')) {
+                loaderOverlay.style.display = 'flex';
+                fetch(`/invitation/${this.dataset.id}/delete/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    loaderOverlay.style.display = 'none'; // Hide loader after response
+                    if (data.success) {
+                        this.closest('tr').remove();
+                    } else {
+                        alert('Xatolik yuz berdi');
+                    }
+                })
+                .catch(() => {
+                    loaderOverlay.style.display = 'none'; // Hide loader on error
+                });
+            }
+        });
     });
 });
 </script>
