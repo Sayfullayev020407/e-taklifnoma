@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wedding Invitation</title>
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <header class="header">
+      <div class="head" style="justify-content: space-between; padding: 5px;">
+        <div>
+          <h4>
+            Online <span>Taklifnoma</span>
+          </h4>
+        </div>
+        <div class="end">
+          {% if telegram_user %}
+          <h4 style="color: #ccc;"> {{ telegram_user.first_name }}</h4>
+          {% endif %}
+        </div>
+      </div>
+    </header>
+    <footer class="footer">
+      <div class="mobile-footer">
+        {% if user.is_authenticated %}
+        <a onclick="changeStyle('home')"class="{% if request.path == '/'  %}active{% endif %}"   id="home" href="{% url 'index' %}">
+          <i class="fas fa-home"></i>
+          <br />
+          Bosh sahifa
+        </a>
+        <a onclick="changeStyle('posts')" class="{% if '/my_invitations/' in request.path %}active{% endif %}"  id="posts" href="{% url 'my_invitations' %}">
+          <i class="fas fa-list"></i>
+          <br />
+          Taklifnomalarim
+        </a>
+        <a onclick="changeStyle('msg')" class="{% if '/profile/' in request.path %}active{% endif %}"  id="msg" href="{% url 'profile' %}">
+          <i class="fas fa-user"></i>
+          <br />
+          Profilim
+        </a>
+        {% else %}
+        <a href="https://t.me/taklifnoma_online_bot">
+          <i class="fab fa-telegram"></i>
+          <br/>
+          taklifnoma yaratish
+        </a>
+        {% endif %}
+      </div>
+      </div>
+    </footer>
+
+    {% block content %}
+    {% endblock content %}
+
+    <script>
+      function changeStyle(activeId) {
+        const links = document.querySelectorAll('.mobile-footer a');
+        links.forEach((link) => {
+          link.classList.remove('active');
+        });
+
+        document.getElementById(activeId).classList.add('active');
+      }
+    </script>
+  </body>
+</html>
+
+<style>
+
+  .image {
+    max-width: 30px;
+  }
+
+  .button {
+    background-color: #7a9f65;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-family: 'Gilroy', sans-serif;
+    transition: background-color 0.3s ease, transform 0.2s;
+  }
+
+  .button a {
+    text-decoration: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .button:hover {
+    background-color: #658b54;
+    transform: scale(1.05);
+  }
+
+  .button img.image {
+    width: 20px;
+    height: 20px;
+  }
+
+  .button:active {
+    transform: scale(0.98);
+  }
+
+  .header {
+    background-color: #34495e;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 1px;
+    height: 55px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+  }
+
+  .header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .header h4 {
+    font-size: 18px;
+    color: white;
+    font-family: 'Cormorant', serif;
+  }
+
+  .header h4 span {
+    color: white;
+  }
+
+  .header .end {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    color: white;
+  }
+
+  .header .end p {
+    margin: 0;
+    margin-right: 10px;
+    color: white;
+    font-size: 14px;
+  }
+
+  .header .end .image {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+  }
+
+  .head {
+    display: flex;
+  }
+  .footer{
+    background-color: #34495e;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+  }
+  .mobile-footer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #34495e;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+
+  .mobile-footer a {
+    text-align: center;
+    color: #fff;
+    text-decoration: none;
+    font-size: 12px;
+    font-family: 'Gilroy', sans-serif;
+  }
+
+  .mobile-footer a i {
+    font-size: 24px;
+    margin-bottom: 5px;
+    transition: color 0.3s;
+  }
+
+  .mobile-footer a.active i,
+  .mobile-footer a:hover i {
+    color: #7a9f65;
+  }
+
+  /* Active State Styling */
+  .mobile-footer a.active {
+    color: #7a9f65;
+  }
+
+  /* Responsive Styling */
+  @media (max-width: 480px) {
+    .header h4 {
+      font-size: 16px;
+    }
+
+    .mobile-footer a {
+      font-size: 11px;
+    }
+
+    .mobile-footer a i {
+      font-size: 22px;
+    }
+  }
+</style>

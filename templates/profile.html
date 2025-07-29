@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% extends 'base.html' %}
+    {% block content %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 70vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .profile-container {
+            border-radius: 10px;
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+        }
+        .profile-container h1 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            word-wrap: break-word;
+        }
+        .profile-container p {
+            font-size: 16px;
+            margin: 5px 0;
+            word-wrap: break-word;
+        }
+
+        @media (min-width: 768px) {
+            .profile-container {
+                width: 80%;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .profile-container {
+                width: 60%;
+            }
+            .profile-container h1 {
+                font-size: 28px;
+            }
+            .profile-container p {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+            <p><img src="{{profile.profile_photo}}" style="border-radius: 50%;" alt=""></p>
+        <p><strong>Name:</strong> {{ profile.first_name }}</p>
+        <p><strong>Telegram ID:</strong> {{ profile.telegram_id }}</p>
+        
+    </div>
+</body>
+</html>
+{% endblock content %}

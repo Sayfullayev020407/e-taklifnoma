@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    /* Umumiy fon rangi */
+body {
+    background-color: #f1f6f9;
+}
+
+/* Mobil qurilmalar uchun maxsus stil */
+@media only screen and (max-width: 768px) {
+    .container {
+        padding: 10px;
+        max-width: 100%;
+        overflow-x: auto; /* Keng kontent uchun gorizontal aylantirish */
+        box-sizing: border-box;
+        margin-bottom: 50px;
+        margin-top: 50px;
+        background-color: #f1f6f9; /* Umumiy fon rangi */
+    }
+
+    h2 {
+        font-size: 1.4rem; /* Sarlavha o'lchami */
+        text-align: center;
+        margin: 1rem 0;
+        color: #34495e; /* To'q ko'k rang, kontrast uchun */
+    }
+
+    /* Jadvalni mobil uchun kartochka ko'rinishiga o'zgartirish */
+    .table {
+        width: 100%;
+        font-size: 0.85rem; /* Matn o'lchami */
+        border-collapse: collapse;
+    }
+
+    .table thead {
+        display: none; /* Mobil ko'rinishda sarlavhalar yashiriladi */
+    }
+
+    .table tbody tr {
+        display: block;
+        margin-bottom: 0.8rem;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        background-color: #34495e; /* Kartochka foni */
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Yumshoq soya */
+        padding: 8px;
+    }
+
+    .table tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 8px;
+        border-bottom: 1px solid #4a6278; /* Kartochka ichida mos chegara rangi */
+        color: #ffffff; /* Oq matn, to'q fonda o'qilishi uchun */
+    }
+
+    /* Har bir yacheykaga yorliq qo'shish */
+    .table tbody td:before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #d0d8e0; /* Yorqinroq kulrang yorliqlar uchun */
+        flex: 1;
+        text-align: left;
+    }
+
+
+    /* Amallar tugmalari */
+    .table tbody td:last-child {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        justify-content: center;
+        border-bottom: none;
+        padding: 10px;
+    }
+
+    .btn {
+        font-size: 0.75rem; /* Tugmalar uchun kichik shrift */
+        padding: 5px 10px;
+        border-radius: 4px;
+        min-width: 70px; /* Sensorli boshqaruv uchun qulay o'lcham */
+        text-align: center;
+        line-height: 1.2;
+        text-decoration: none;
+        border: none;
+        transition: background-color 0.2s; /* Yumshoq o'tish effekti */
+    }
+
+    .btn-info {
+        background-color: #0288d1; /* Moviy */
+        color: #fff;
+    }
+
+    .btn-info:hover {
+        background-color: #0277b3; /* Hover effekti */
+    }
+
+    .btn-warning {
+        background-color: #fb8c00; /* To'q sariq */
+        color: #fff;
+    }
+
+    .btn-warning:hover {
+        background-color: #e07b00; /* Hover effekti */
+    }
+
+    .btn-danger {
+        background-color: #d32f2f; /* Qizil */
+        color: #fff;
+    }
+
+    .btn-danger:hover {
+        background-color: #b71c1c; /* Hover effekti */
+    }
+
+    .btn-primary.mt-3 {
+        display: block;
+        width: 100%;
+        font-size: 0.9rem;
+        padding: 8px;
+        background-color: #0288d1; /* Moviy */
+        color: #fff;
+        border-radius: 4px;
+        text-align: center;
+        margin-top: 1rem;
+        border: none;
+    }
+
+    .btn-primary.mt-3:hover {
+        background-color: #0277b3; /* Hover effekti */
+    }
+
+    /* Taklifnomalar yo'q xabari */
+    p {
+        text-align: center;
+        font-size: 0.9rem;
+        color: #34495e; /* To'q ko'k, fon bilan mos */
+        margin: 1.5rem 0;
+        padding: 10px;
+        background-color: #e8ecef; /* Engil kulrang fon */
+        border-radius: 4px;
+    }
+}
+</style>
+<div class="container">
+    <h2>Mening taklifnomalarim</h2>
+    {% if invitations %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>To'y turi</th>
+                    {% if category.name == 'Nikoh' %}
+                    <th>Kuyov Ismi</th>
+                    <th>Kelin Ismi</th>
+                    {% else %}
+                    <th>Toy sababchisi</th>
+                    {% endif %}
+                    <th>Sana</th>
+                    <th>Amallar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for invitation in invitations %}
+                <tr>
+                    <td data-label="To'y turi">{{ invitation.category.name }}</td>
+                    <td data-label="{% if invitation.category.name == 'Nikoh' %}Kuyov Ismi{% else %}To'y sababchisi{% endif %}">{{ invitation.name_1 }}</td>
+                    <td data-label="{% if invitation.category.name == 'Nikoh' %}Kelin Ismi{% endif %}">{{ invitation.name_2|default:"" }}</td>
+                    <td data-label="Sana">{{ invitation.date }}</td>
+                    <td style="text-align: center;"> 
+                        <a href="{% url 'invitation_page' invitation.unique_url %}" class="btn btn-sm btn-info">Batafsil</a>
+                        <a href="{% url 'edit_invitation' invitation.id %}" class="btn btn-sm btn-warning">Tahrirlash</a>
+                        <button class="btn btn-sm btn-danger delete-btn" data-id="{{ invitation.id }}">O'chirish</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Hozircha taklifnomalar yo'q</p>
+    {% endif %}
+</div>
+<script>
+document.querySelectorAll('.delete-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        if (confirm('Haqiqatan ham o\'chirishni xohlaysizmi?')) {
+            fetch(`/invitation/${this.dataset.id}/delete/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.closest('tr').remove();
+                } else {
+                    alert('Xatolik yuz berdi');
+                }
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

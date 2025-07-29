@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h2>{{ invitation.category.name }}</h2>
+            <h3>{{ invitation.name_1 }}{% if invitation.name_2 %} va {{ invitation.name_2 }}{% endif %}</h3>
+            <div id="countdown" class="countdown"></div>
+            <p>Sana: {{ invitation.date|date:"d.m.Y H:i" }}</p>
+            <p>To'yxona: {{ invitation.wedding_hall }}</p>
+            <p>Manzil: {{ invitation.address }}</p>
+            {% if invitation.apartment %}
+            <p>Xonadon: {{ invitation.apartment }}</p>
+            {% endif %}
+            {% if request.user.is_authenticated and invitation.user and request.user == invitation.user.user %}
+    <div class="mt-3 buttons-row">
+        <button class="btn btn-primary" onclick="share()">Ulashish</button>
+        <button class="btn btn-success send-image-btn" data-id="{{ invitation.id }}">Rasm</button>
+        <button class="btn btn-info send-video-btn" data-id="{{ invitation.id }}">Video</button>
+    </div>
+{% endif %}
+        </div>
+    </div>
+</div>
+<style>
+    body {
+        font-family: 'Cormorant Garamond', serif;
+        background: url('{{ invitation.background.image.url }}') no-repeat center center fixed;
+        background-size: cover;
+        color: #fff;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 90vh;
+    }
+    .card {
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+        width: 400px;
+    }
+    .countdown {
+        font-size: 1.5em;
+        margin: 10px 0;
+        font-style: italic;
+        color: #e0c9b3;
+    }
+    .buttons-row {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+    .btn {
+        padding: 5px 10px;
+        margin: 0;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1em;
+    }
+    .btn-primary {
+        background-color: #d4a59a;
+        color: white;
+    }
+    .btn-success {
+        background-color: #9bc53d;
+        color: white;
+    }
+    .btn-info {
+        background-color: #5bc0de;
+        color: white;
+    }
+    .btn:hover {
+        opacity: 0.9;
+    }
+</style>
+<script>
+    // To'y sanasi
+    const weddingDate = new Date("{{ invitation.date|date:'Y-m-d H:i:s' }}").getTime();
+
+    // Hisoblagich funksiyasi
+    function updateCountdown() {
+        const now = new Date().getTime();
+        const distance = weddingDate - now;
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById("countdown").innerHTML = `${days} kun, ${hours} soat, ${minutes} minut, ${seconds} sekund`;
+
+        if (distance < 0) {
+            document.getElementById("countdown").innerHTML = "To'y boshlandi!";
+        }
+    }
+
+    // Har sekundda yangilash
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // Ulashish funksiyasi
+    function share() {
+        if (navigator.share) {
+            navigator.share({
+                title: '{{ invitation.category.name }} taklifnomasi',
+                url: '{{ share_url|default:"" }}'
+            }).catch(console.error);
+        } else {
+            navigator.clipboard.writeText('{{ share_url|default:"" }}').then(() => {
+                alert('Havola nusxalandi!');
+            });
+        }
+    }
+
+    // Rasm va video yuborish
+    document.querySelectorAll('.send-image-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            fetch(`/invitation/${this.dataset.id}/send/image/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Rasm Telegramga yuborildi!');
+                } else {
+                    alert('Xatolik: ' + data.error);
+                }
+            });
+        });
+    });
+
+    document.querySelectorAll('.send-video-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            fetch(`/invitation/${this.dataset.id}/send/video/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Video Telegramga yuborildi!');
+                } else {
+                    alert('Xatolik: ' + data.error);
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
