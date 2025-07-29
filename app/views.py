@@ -28,7 +28,6 @@ def send_file_to_telegram(chat_id, file_path, file_type='photo'):
         return False
 
 def index(request):
-    telegram_user = TelegramUser.objects.get(user=request.user)
     tg_id = request.GET.get('tg_id') or request.session.get('tg_id')
     username = request.GET.get('username') or request.session.get('username')
     first_name = request.GET.get('first_name') or request.session.get('first_name')
@@ -70,7 +69,7 @@ def index(request):
         'profile_photo': tg_user.profile_photo,
         'categories': categories,
         'home':'home',
-        'telegram_user': telegram_user
+        'telegram_user': tg_user
     }
     return render(request, 'index.html', context)
 
