@@ -79,6 +79,27 @@
     }
 </style>
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loaderOverlay = document.getElementById('loaderOverlay');
+    const links = document.querySelectorAll('.container a');
+    const shareButton = document.querySelector('.btn-primary');
+    const imageButton = document.querySelector('.send-image-btn');
+    const videoButton = document.querySelector('.send-video-btn');
+
+    // Show loader for links in the content area
+    links.forEach(link => {
+        link.addEventListener('click', function() {
+            loaderOverlay.style.display = 'flex';
+        });
+    });
+
+    // Show loader for share button
+    if (shareButton) {
+        shareButton.addEventListener('click', function() {
+            loaderOverlay.style.display = 'flex';
+        });
+    }
+
     // To'y sanasi
     const weddingDate = new Date("{{ invitation.date|date:'Y-m-d H:i:s' }}").getTime();
 
@@ -109,17 +130,25 @@
             navigator.share({
                 title: '{{ invitation.category.name }} taklifnomasi',
                 url: '{{ share_url|default:"" }}'
-            }).catch(console.error);
+            }).then(() => {
+                loaderOverlay.style.display = 'none'; // Hide loader after share
+            }).catch(() => {
+                loaderOverlay.style.display = 'none'; // Hide loader on error
+            });
         } else {
             navigator.clipboard.writeText('{{ share_url|default:"" }}').then(() => {
+                loaderOverlay.style.display = 'none'; // Hide loader after copy
                 alert('Havola nusxalandi!');
+            }).catch(() => {
+                loaderOverlay.style.display = 'none'; // Hide loader on error
             });
         }
     }
 
     // Rasm va video yuborish
-    document.querySelectorAll('.send-image-btn').forEach(button => {
-        button.addEventListener('click', function() {
+    if (imageButton) {
+        imageButton.addEventListener('click', function() {
+            loaderOverlay.style.display = 'flex';
             fetch(`/invitation/${this.dataset.id}/send/image/`, {
                 method: 'POST',
                 headers: {
@@ -128,17 +157,22 @@
             })
             .then(response => response.json())
             .then(data => {
+                loaderOverlay.style.display = 'none'; // Hide loader after response
                 if (data.success) {
                     alert('Rasm Telegramga yuborildi!');
                 } else {
                     alert('Xatolik: ' + data.error);
                 }
+            })
+            .catch(() => {
+                loaderOverlay.style.display = 'none'; // Hide loader on error
             });
         });
-    });
+    }
 
-    document.querySelectorAll('.send-video-btn').forEach(button => {
-        button.addEventListener('click', function() {
+    if (videoButton) {
+        videoButton.addEventListener('click', function() {
+            loaderOverlay.style.display = 'flex';
             fetch(`/invitation/${this.dataset.id}/send/video/`, {
                 method: 'POST',
                 headers: {
@@ -147,13 +181,18 @@
             })
             .then(response => response.json())
             .then(data => {
+                loaderOverlay.style.display = 'none'; // Hide loader after response
                 if (data.success) {
                     alert('Video Telegramga yuborildi!');
                 } else {
                     alert('Xatolik: ' + data.error);
                 }
+            })
+            .catch(() => {
+                loaderOverlay.style.display = 'none'; // Hide loader on error
             });
         });
-    });
+    }
+});
 </script>
 {% endblock %}
