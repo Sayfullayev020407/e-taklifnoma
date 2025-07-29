@@ -32,6 +32,7 @@ CSRF_TRUSTED_ORIGINS = ['https://phoenix-rapid-factually.ngrok-free.app']
 ALLOWED_HOSTS =[
     'phoenix-rapid-factually.ngrok-free.app',
     '127.0.0.1',
+    '*'
 ]
 
 
