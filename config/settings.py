@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-@!v5%uu575ucz5#e)1xe4upvvtz)x+xrzyl1tjn8$$gtc7!*5q
 DEBUG = True
 
 
-CSRF_TRUSTED_ORIGINS = ['https://phoenix-rapid-factually.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ['https://phoenix-rapid-factually.ngrok-free.app','https://online-taklifnoma.up.railway.app']
 
 ALLOWED_HOSTS =[
     'phoenix-rapid-factually.ngrok-free.app',
