@@ -198,7 +198,11 @@ body {
 document.addEventListener('DOMContentLoaded', function() {
     const images = document.querySelectorAll('.background-image');
     const hiddenInput = document.getElementById('selected-background');
+    const form = document.getElementById('invitation-form');
+    const loaderOverlay = document.getElementById('loaderOverlay');
+    const links = document.querySelectorAll('.container a');
 
+    // Background image selection
     images.forEach(image => {
         image.addEventListener('click', function() {
             images.forEach(img => {
@@ -208,6 +212,18 @@ document.addEventListener('DOMContentLoaded', function() {
             this.classList.add('selected');
             this.nextElementSibling.style.display = 'block';
             hiddenInput.value = this.dataset.id;
+        });
+    });
+
+    // Show loader on form submission
+    form.addEventListener('submit', function() {
+        loaderOverlay.style.display = 'flex';
+    });
+
+    // Show loader for links in the content area
+    links.forEach(link => {
+        link.addEventListener('click', function() {
+            loaderOverlay.style.display = 'flex';
         });
     });
 });
